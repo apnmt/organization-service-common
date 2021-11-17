@@ -1,7 +1,7 @@
 package de.apnmt.organization.common.service.mapper;
 
 import de.apnmt.organization.common.domain.Employee;
-import de.apnmt.organization.service.dto.EmployeeDTO;
+import de.apnmt.organization.common.service.dto.EmployeeDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

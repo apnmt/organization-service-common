@@ -1,9 +1,9 @@
 package de.apnmt.organization.common.service;
 
-import de.apnmt.organization.domain.Addresse;
-import de.apnmt.organization.repository.AddresseRepository;
-import de.apnmt.organization.service.dto.AddresseDTO;
-import de.apnmt.organization.service.mapper.AddresseMapper;
+import de.apnmt.organization.common.domain.Addresse;
+import de.apnmt.organization.common.repository.AddresseRepository;
+import de.apnmt.organization.common.service.dto.AddresseDTO;
+import de.apnmt.organization.common.service.mapper.AddresseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

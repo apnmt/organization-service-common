@@ -1,4 +1,4 @@
-package de.apnmt.organization.common.rest.errors;
+package de.apnmt.organization.common.web.rest.errors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;

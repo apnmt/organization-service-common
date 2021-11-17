@@ -1,9 +1,9 @@
 package de.apnmt.organization.common.service;
 
-import de.apnmt.organization.domain.ClosingTime;
-import de.apnmt.organization.repository.ClosingTimeRepository;
-import de.apnmt.organization.service.dto.ClosingTimeDTO;
-import de.apnmt.organization.service.mapper.ClosingTimeMapper;
+import de.apnmt.organization.common.domain.ClosingTime;
+import de.apnmt.organization.common.repository.ClosingTimeRepository;
+import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
+import de.apnmt.organization.common.service.mapper.ClosingTimeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
-package de.apnmt.organization.common.rest;
+package de.apnmt.organization.common.web.rest;
 
 import de.apnmt.organization.common.domain.WorkingHour;
-import de.apnmt.organization.repository.WorkingHourRepository;
-import de.apnmt.organization.service.WorkingHourService;
-import de.apnmt.organization.service.dto.WorkingHourDTO;
-import de.apnmt.organization.web.rest.errors.BadRequestAlertException;
+import de.apnmt.organization.common.repository.WorkingHourRepository;
+import de.apnmt.organization.common.service.WorkingHourService;
+import de.apnmt.organization.common.service.dto.WorkingHourDTO;
+import de.apnmt.organization.common.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

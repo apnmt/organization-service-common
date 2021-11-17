@@ -1,9 +1,9 @@
 package de.apnmt.organization.common.service;
 
-import de.apnmt.organization.domain.OpeningHour;
-import de.apnmt.organization.repository.OpeningHourRepository;
-import de.apnmt.organization.service.dto.OpeningHourDTO;
-import de.apnmt.organization.service.mapper.OpeningHourMapper;
+import de.apnmt.organization.common.domain.OpeningHour;
+import de.apnmt.organization.common.repository.OpeningHourRepository;
+import de.apnmt.organization.common.service.dto.OpeningHourDTO;
+import de.apnmt.organization.common.service.mapper.OpeningHourMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

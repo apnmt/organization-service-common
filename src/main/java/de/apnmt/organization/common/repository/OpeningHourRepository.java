@@ -1,6 +1,7 @@
 package de.apnmt.organization.common.repository;
 
-import de.apnmt.organization.domain.OpeningHour;
+import de.apnmt.organization.common.domain.OpeningHour;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**

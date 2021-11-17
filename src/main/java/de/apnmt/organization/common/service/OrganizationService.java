@@ -1,9 +1,9 @@
 package de.apnmt.organization.common.service;
 
-import de.apnmt.organization.domain.Organization;
-import de.apnmt.organization.repository.OrganizationRepository;
-import de.apnmt.organization.service.dto.OrganizationDTO;
-import de.apnmt.organization.service.mapper.OrganizationMapper;
+import de.apnmt.organization.common.domain.Organization;
+import de.apnmt.organization.common.repository.OrganizationRepository;
+import de.apnmt.organization.common.service.dto.OrganizationDTO;
+import de.apnmt.organization.common.service.mapper.OrganizationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

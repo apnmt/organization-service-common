@@ -1,7 +1,7 @@
 package de.apnmt.organization.common.service.mapper;
 
 import de.apnmt.organization.common.domain.Addresse;
-import de.apnmt.organization.service.dto.AddresseDTO;
+import de.apnmt.organization.common.service.dto.AddresseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

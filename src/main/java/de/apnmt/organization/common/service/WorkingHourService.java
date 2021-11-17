@@ -1,9 +1,9 @@
 package de.apnmt.organization.common.service;
 
-import de.apnmt.organization.domain.WorkingHour;
-import de.apnmt.organization.repository.WorkingHourRepository;
-import de.apnmt.organization.service.dto.WorkingHourDTO;
-import de.apnmt.organization.service.mapper.WorkingHourMapper;
+import de.apnmt.organization.common.domain.WorkingHour;
+import de.apnmt.organization.common.repository.WorkingHourRepository;
+import de.apnmt.organization.common.service.dto.WorkingHourDTO;
+import de.apnmt.organization.common.service.mapper.WorkingHourMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

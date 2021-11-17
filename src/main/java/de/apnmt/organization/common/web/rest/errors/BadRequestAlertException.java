@@ -1,4 +1,4 @@
-package de.apnmt.organization.common.rest.errors;
+package de.apnmt.organization.common.web.rest.errors;
 
 import org.zalando.problem.AbstractThrowableProblem;
 import org.zalando.problem.Status;

@@ -1,7 +1,7 @@
 package de.apnmt.organization.common.service.mapper;
 
 import de.apnmt.organization.common.domain.ClosingTime;
-import de.apnmt.organization.service.dto.ClosingTimeDTO;
+import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

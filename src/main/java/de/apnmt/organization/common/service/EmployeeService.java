@@ -1,9 +1,9 @@
 package de.apnmt.organization.common.service;
 
-import de.apnmt.organization.domain.Employee;
-import de.apnmt.organization.repository.EmployeeRepository;
-import de.apnmt.organization.service.dto.EmployeeDTO;
-import de.apnmt.organization.service.mapper.EmployeeMapper;
+import de.apnmt.organization.common.domain.Employee;
+import de.apnmt.organization.common.repository.EmployeeRepository;
+import de.apnmt.organization.common.service.dto.EmployeeDTO;
+import de.apnmt.organization.common.service.mapper.EmployeeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

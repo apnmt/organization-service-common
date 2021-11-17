@@ -1,6 +1,7 @@
 package de.apnmt.organization.common.repository;
 
-import de.apnmt.organization.domain.Organization;
+import de.apnmt.organization.common.domain.Organization;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**

@@ -3,4 +3,4 @@
  *
  * More information on https://github.com/zalando/problem-spring-web
  */
-package de.apnmt.organization.common.rest.errors;
+package de.apnmt.organization.common.web.rest.errors;

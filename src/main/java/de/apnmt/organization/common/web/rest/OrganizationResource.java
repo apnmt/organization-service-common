@@ -1,10 +1,10 @@
-package de.apnmt.organization.common.rest;
+package de.apnmt.organization.common.web.rest;
 
 import de.apnmt.organization.common.domain.Organization;
-import de.apnmt.organization.repository.OrganizationRepository;
-import de.apnmt.organization.service.OrganizationService;
-import de.apnmt.organization.service.dto.OrganizationDTO;
-import de.apnmt.organization.web.rest.errors.BadRequestAlertException;
+import de.apnmt.organization.common.repository.OrganizationRepository;
+import de.apnmt.organization.common.service.OrganizationService;
+import de.apnmt.organization.common.service.dto.OrganizationDTO;
+import de.apnmt.organization.common.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
