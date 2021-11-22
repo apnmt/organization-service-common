@@ -1,11 +1,11 @@
 package de.apnmt.organization.common.service.dto;
 
 import de.apnmt.organization.common.domain.OpeningHour;
-import de.apnmt.organization.domain.enumeration.Day;
+import de.apnmt.organization.common.domain.enumeration.Day;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -13,20 +13,21 @@ import java.util.Objects;
  */
 public class OpeningHourDTO implements Serializable {
 
+    private static final long serialVersionUID = -1504543712682631148L;
     private Long id;
 
     private Day day;
 
     @NotNull
-    private Instant startTime;
+    private LocalTime startTime;
 
     @NotNull
-    private Instant endTime;
+    private LocalTime endTime;
 
     private OrganizationDTO organization;
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -34,31 +35,31 @@ public class OpeningHourDTO implements Serializable {
     }
 
     public Day getDay() {
-        return day;
+        return this.day;
     }
 
     public void setDay(Day day) {
         this.day = day;
     }
 
-    public Instant getStartTime() {
-        return startTime;
+    public LocalTime getStartTime() {
+        return this.startTime;
     }
 
-    public void setStartTime(Instant startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Instant getEndTime() {
-        return endTime;
+    public LocalTime getEndTime() {
+        return this.endTime;
     }
 
-    public void setEndTime(Instant endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 
     public OrganizationDTO getOrganization() {
-        return organization;
+        return this.organization;
     }
 
     public void setOrganization(OrganizationDTO organization) {
@@ -90,11 +91,11 @@ public class OpeningHourDTO implements Serializable {
     @Override
     public String toString() {
         return "OpeningHourDTO{" +
-            "id=" + getId() +
-            ", day='" + getDay() + "'" +
-            ", startTime='" + getStartTime() + "'" +
-            ", endTime='" + getEndTime() + "'" +
-            ", organization=" + getOrganization() +
-            "}";
+                "id=" + getId() +
+                ", day='" + getDay() + "'" +
+                ", startTime='" + getStartTime() + "'" +
+                ", endTime='" + getEndTime() + "'" +
+                ", organization=" + getOrganization() +
+                "}";
     }
 }

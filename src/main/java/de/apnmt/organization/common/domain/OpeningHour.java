@@ -6,7 +6,7 @@ import de.apnmt.organization.common.domain.enumeration.Day;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalTime;
 
 /**
  * A OpeningHour.
@@ -28,19 +28,19 @@ public class OpeningHour implements Serializable {
 
     @NotNull
     @Column(name = "start_time", nullable = false)
-    private Instant startTime;
+    private LocalTime startTime;
 
     @NotNull
     @Column(name = "end_time", nullable = false)
-    private Instant endTime;
+    private LocalTime endTime;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "closingTimes", "openingHours", "employees", "addresse" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"closingTimes", "openingHours", "employees", "addresse"}, allowSetters = true)
     private Organization organization;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -65,29 +65,29 @@ public class OpeningHour implements Serializable {
         this.day = day;
     }
 
-    public Instant getStartTime() {
+    public LocalTime getStartTime() {
         return this.startTime;
     }
 
-    public OpeningHour startTime(Instant startTime) {
+    public OpeningHour startTime(LocalTime startTime) {
         this.startTime = startTime;
         return this;
     }
 
-    public void setStartTime(Instant startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Instant getEndTime() {
+    public LocalTime getEndTime() {
         return this.endTime;
     }
 
-    public OpeningHour endTime(Instant endTime) {
+    public OpeningHour endTime(LocalTime endTime) {
         this.endTime = endTime;
         return this;
     }
 
-    public void setEndTime(Instant endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 
@@ -114,7 +114,7 @@ public class OpeningHour implements Serializable {
         if (!(o instanceof OpeningHour)) {
             return false;
         }
-        return id != null && id.equals(((OpeningHour) o).id);
+        return this.id != null && this.id.equals(((OpeningHour) o).id);
     }
 
     @Override
@@ -127,10 +127,10 @@ public class OpeningHour implements Serializable {
     @Override
     public String toString() {
         return "OpeningHour{" +
-            "id=" + getId() +
-            ", day='" + getDay() + "'" +
-            ", startTime='" + getStartTime() + "'" +
-            ", endTime='" + getEndTime() + "'" +
-            "}";
+                "id=" + getId() +
+                ", day='" + getDay() + "'" +
+                ", startTime='" + getStartTime() + "'" +
+                ", endTime='" + getEndTime() + "'" +
+                "}";
     }
 }

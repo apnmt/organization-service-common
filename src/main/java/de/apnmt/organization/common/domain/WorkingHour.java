@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * A WorkingHour.
@@ -23,19 +23,19 @@ public class WorkingHour implements Serializable {
 
     @NotNull
     @Column(name = "start_at", nullable = false)
-    private Instant startAt;
+    private LocalDateTime startAt;
 
     @NotNull
     @Column(name = "end_at", nullable = false)
-    private Instant endAt;
+    private LocalDateTime endAt;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "workingHours", "organization" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"workingHours", "organization"}, allowSetters = true)
     private Employee employee;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -47,29 +47,29 @@ public class WorkingHour implements Serializable {
         return this;
     }
 
-    public Instant getStartAt() {
+    public LocalDateTime getStartAt() {
         return this.startAt;
     }
 
-    public WorkingHour startAt(Instant startAt) {
+    public WorkingHour startAt(LocalDateTime startAt) {
         this.startAt = startAt;
         return this;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(LocalDateTime startAt) {
         this.startAt = startAt;
     }
 
-    public Instant getEndAt() {
+    public LocalDateTime getEndAt() {
         return this.endAt;
     }
 
-    public WorkingHour endAt(Instant endAt) {
+    public WorkingHour endAt(LocalDateTime endAt) {
         this.endAt = endAt;
         return this;
     }
 
-    public void setEndAt(Instant endAt) {
+    public void setEndAt(LocalDateTime endAt) {
         this.endAt = endAt;
     }
 
@@ -96,7 +96,7 @@ public class WorkingHour implements Serializable {
         if (!(o instanceof WorkingHour)) {
             return false;
         }
-        return id != null && id.equals(((WorkingHour) o).id);
+        return this.id != null && this.id.equals(((WorkingHour) o).id);
     }
 
     @Override
@@ -109,9 +109,9 @@ public class WorkingHour implements Serializable {
     @Override
     public String toString() {
         return "WorkingHour{" +
-            "id=" + getId() +
-            ", startAt='" + getStartAt() + "'" +
-            ", endAt='" + getEndAt() + "'" +
-            "}";
+                "id=" + getId() +
+                ", startAt='" + getStartAt() + "'" +
+                ", endAt='" + getEndAt() + "'" +
+                "}";
     }
 }

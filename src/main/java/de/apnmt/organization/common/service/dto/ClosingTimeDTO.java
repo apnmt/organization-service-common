@@ -4,7 +4,7 @@ import de.apnmt.organization.common.domain.ClosingTime;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -12,42 +12,43 @@ import java.util.Objects;
  */
 public class ClosingTimeDTO implements Serializable {
 
+    private static final long serialVersionUID = 6306496168077255894L;
     private Long id;
 
     @NotNull
-    private Instant startAt;
+    private LocalDateTime startAt;
 
     @NotNull
-    private Instant endAt;
+    private LocalDateTime endAt;
 
     private OrganizationDTO organization;
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Instant getStartAt() {
-        return startAt;
+    public LocalDateTime getStartAt() {
+        return this.startAt;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(LocalDateTime startAt) {
         this.startAt = startAt;
     }
 
-    public Instant getEndAt() {
-        return endAt;
+    public LocalDateTime getEndAt() {
+        return this.endAt;
     }
 
-    public void setEndAt(Instant endAt) {
+    public void setEndAt(LocalDateTime endAt) {
         this.endAt = endAt;
     }
 
     public OrganizationDTO getOrganization() {
-        return organization;
+        return this.organization;
     }
 
     public void setOrganization(OrganizationDTO organization) {
@@ -79,10 +80,10 @@ public class ClosingTimeDTO implements Serializable {
     @Override
     public String toString() {
         return "ClosingTimeDTO{" +
-            "id=" + getId() +
-            ", startAt='" + getStartAt() + "'" +
-            ", endAt='" + getEndAt() + "'" +
-            ", organization=" + getOrganization() +
-            "}";
+                "id=" + getId() +
+                ", startAt='" + getStartAt() + "'" +
+                ", endAt='" + getEndAt() + "'" +
+                ", organization=" + getOrganization() +
+                "}";
     }
 }

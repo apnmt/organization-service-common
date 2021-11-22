@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * A ClosingTime.
@@ -23,19 +23,19 @@ public class ClosingTime implements Serializable {
 
     @NotNull
     @Column(name = "start_at", nullable = false)
-    private Instant startAt;
+    private LocalDateTime startAt;
 
     @NotNull
     @Column(name = "end_at", nullable = false)
-    private Instant endAt;
+    private LocalDateTime endAt;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "closingTimes", "openingHours", "employees", "addresse" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"closingTimes", "openingHours", "employees", "addresse"}, allowSetters = true)
     private Organization organization;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -47,29 +47,29 @@ public class ClosingTime implements Serializable {
         return this;
     }
 
-    public Instant getStartAt() {
+    public LocalDateTime getStartAt() {
         return this.startAt;
     }
 
-    public ClosingTime startAt(Instant startAt) {
+    public ClosingTime startAt(LocalDateTime startAt) {
         this.startAt = startAt;
         return this;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(LocalDateTime startAt) {
         this.startAt = startAt;
     }
 
-    public Instant getEndAt() {
+    public LocalDateTime getEndAt() {
         return this.endAt;
     }
 
-    public ClosingTime endAt(Instant endAt) {
+    public ClosingTime endAt(LocalDateTime endAt) {
         this.endAt = endAt;
         return this;
     }
 
-    public void setEndAt(Instant endAt) {
+    public void setEndAt(LocalDateTime endAt) {
         this.endAt = endAt;
     }
 
@@ -96,7 +96,7 @@ public class ClosingTime implements Serializable {
         if (!(o instanceof ClosingTime)) {
             return false;
         }
-        return id != null && id.equals(((ClosingTime) o).id);
+        return this.id != null && this.id.equals(((ClosingTime) o).id);
     }
 
     @Override
@@ -109,9 +109,9 @@ public class ClosingTime implements Serializable {
     @Override
     public String toString() {
         return "ClosingTime{" +
-            "id=" + getId() +
-            ", startAt='" + getStartAt() + "'" +
-            ", endAt='" + getEndAt() + "'" +
-            "}";
+                "id=" + getId() +
+                ", startAt='" + getStartAt() + "'" +
+                ", endAt='" + getEndAt() + "'" +
+                "}";
     }
 }

@@ -4,7 +4,7 @@ import de.apnmt.organization.common.domain.WorkingHour;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -12,42 +12,43 @@ import java.util.Objects;
  */
 public class WorkingHourDTO implements Serializable {
 
+    private static final long serialVersionUID = 4736677133559736127L;
     private Long id;
 
     @NotNull
-    private Instant startAt;
+    private LocalDateTime startAt;
 
     @NotNull
-    private Instant endAt;
+    private LocalDateTime endAt;
 
     private EmployeeDTO employee;
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Instant getStartAt() {
-        return startAt;
+    public LocalDateTime getStartAt() {
+        return this.startAt;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(LocalDateTime startAt) {
         this.startAt = startAt;
     }
 
-    public Instant getEndAt() {
-        return endAt;
+    public LocalDateTime getEndAt() {
+        return this.endAt;
     }
 
-    public void setEndAt(Instant endAt) {
+    public void setEndAt(LocalDateTime endAt) {
         this.endAt = endAt;
     }
 
     public EmployeeDTO getEmployee() {
-        return employee;
+        return this.employee;
     }
 
     public void setEmployee(EmployeeDTO employee) {
@@ -79,10 +80,10 @@ public class WorkingHourDTO implements Serializable {
     @Override
     public String toString() {
         return "WorkingHourDTO{" +
-            "id=" + getId() +
-            ", startAt='" + getStartAt() + "'" +
-            ", endAt='" + getEndAt() + "'" +
-            ", employee=" + getEmployee() +
-            "}";
+                "id=" + getId() +
+                ", startAt='" + getStartAt() + "'" +
+                ", endAt='" + getEndAt() + "'" +
+                ", employee=" + getEmployee() +
+                "}";
     }
 }
