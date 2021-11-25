@@ -4,7 +4,6 @@ import de.apnmt.organization.common.domain.Organization;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -12,6 +11,7 @@ import java.util.Objects;
  */
 public class OrganizationDTO implements Serializable {
 
+    private static final long serialVersionUID = 837849912343249973L;
     private Long id;
 
     @NotNull
@@ -24,13 +24,16 @@ public class OrganizationDTO implements Serializable {
     private String phone;
 
     @NotNull
-    private LocalDate ownerId;
+    private Long ownerId;
 
     @NotNull
     private Boolean active;
 
+    @NotNull
+    private AddresseDTO addresse;
+
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -38,7 +41,7 @@ public class OrganizationDTO implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -46,7 +49,7 @@ public class OrganizationDTO implements Serializable {
     }
 
     public String getMail() {
-        return mail;
+        return this.mail;
     }
 
     public void setMail(String mail) {
@@ -54,27 +57,35 @@ public class OrganizationDTO implements Serializable {
     }
 
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public LocalDate getOwnerId() {
-        return ownerId;
+    public Long getOwnerId() {
+        return this.ownerId;
     }
 
-    public void setOwnerId(LocalDate ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
     public Boolean getActive() {
-        return active;
+        return this.active;
     }
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public AddresseDTO getAddresse() {
+        return this.addresse;
+    }
+
+    public void setAddresse(AddresseDTO addresse) {
+        this.addresse = addresse;
     }
 
     @Override
@@ -98,16 +109,16 @@ public class OrganizationDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "OrganizationDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", mail='" + getMail() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", ownerId='" + getOwnerId() + "'" +
-            ", active='" + getActive() + "'" +
-            "}";
+                "id=" + this.id +
+                ", name='" + this.name + '\'' +
+                ", mail='" + this.mail + '\'' +
+                ", phone='" + this.phone + '\'' +
+                ", ownerId=" + this.ownerId +
+                ", active=" + this.active +
+                ", addresse=" + this.addresse +
+                '}';
     }
 }

@@ -1,7 +1,6 @@
 package de.apnmt.organization.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,6 +18,7 @@ public class Addresse implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
     private Long id;
 
     @NotNull
@@ -37,14 +37,14 @@ public class Addresse implements Serializable {
     @Column(name = "country", nullable = false)
     private String country;
 
-    @JsonIgnoreProperties(value = { "closingTimes", "openingHours", "employees", "addresse" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"closingTimes", "openingHours", "employees", "addresse"}, allowSetters = true)
     @OneToOne
     @JoinColumn(unique = true)
     private Organization organization;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -131,7 +131,7 @@ public class Addresse implements Serializable {
         if (!(o instanceof Addresse)) {
             return false;
         }
-        return id != null && id.equals(((Addresse) o).id);
+        return this.id != null && this.id.equals(((Addresse) o).id);
     }
 
     @Override
@@ -144,11 +144,11 @@ public class Addresse implements Serializable {
     @Override
     public String toString() {
         return "Addresse{" +
-            "id=" + getId() +
-            ", line1='" + getLine1() + "'" +
-            ", city='" + getCity() + "'" +
-            ", postalCode='" + getPostalCode() + "'" +
-            ", country='" + getCountry() + "'" +
-            "}";
+                "id=" + getId() +
+                ", line1='" + getLine1() + "'" +
+                ", city='" + getCity() + "'" +
+                ", postalCode='" + getPostalCode() + "'" +
+                ", country='" + getCountry() + "'" +
+                "}";
     }
 }

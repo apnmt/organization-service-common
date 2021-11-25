@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,31 +36,30 @@ public class Organization implements Serializable {
 
     @NotNull
     @Column(name = "owner_id", nullable = false)
-    private LocalDate ownerId;
+    private Long ownerId;
 
     @NotNull
     @Column(name = "active", nullable = false)
     private Boolean active;
 
     @OneToMany(mappedBy = "organization")
-    @JsonIgnoreProperties(value = { "organization" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"organization"}, allowSetters = true)
     private Set<ClosingTime> closingTimes = new HashSet<>();
 
     @OneToMany(mappedBy = "organization")
-    @JsonIgnoreProperties(value = { "organization" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"organization"}, allowSetters = true)
     private Set<OpeningHour> openingHours = new HashSet<>();
 
     @OneToMany(mappedBy = "organization")
-    @JsonIgnoreProperties(value = { "workingHours", "organization" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"workingHours", "organization"}, allowSetters = true)
     private Set<Employee> employees = new HashSet<>();
 
-    @JsonIgnoreProperties(value = { "organization" }, allowSetters = true)
-    @OneToOne(mappedBy = "organization")
+    @OneToOne(mappedBy = "organization", cascade = CascadeType.ALL)
     private Addresse addresse;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -112,16 +110,16 @@ public class Organization implements Serializable {
         this.phone = phone;
     }
 
-    public LocalDate getOwnerId() {
+    public Long getOwnerId() {
         return this.ownerId;
     }
 
-    public Organization ownerId(LocalDate ownerId) {
+    public Organization ownerId(Long ownerId) {
         this.ownerId = ownerId;
         return this;
     }
 
-    public void setOwnerId(LocalDate ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -260,7 +258,7 @@ public class Organization implements Serializable {
         if (!(o instanceof Organization)) {
             return false;
         }
-        return id != null && id.equals(((Organization) o).id);
+        return this.id != null && this.id.equals(((Organization) o).id);
     }
 
     @Override
@@ -273,12 +271,12 @@ public class Organization implements Serializable {
     @Override
     public String toString() {
         return "Organization{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", mail='" + getMail() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", ownerId='" + getOwnerId() + "'" +
-            ", active='" + getActive() + "'" +
-            "}";
+                "id=" + getId() +
+                ", name='" + getName() + "'" +
+                ", mail='" + getMail() + "'" +
+                ", phone='" + getPhone() + "'" +
+                ", ownerId='" + getOwnerId() + "'" +
+                ", active='" + getActive() + "'" +
+                "}";
     }
 }

@@ -11,6 +11,7 @@ import java.util.Objects;
  */
 public class AddresseDTO implements Serializable {
 
+    private static final long serialVersionUID = 6884589124862883566L;
     private Long id;
 
     @NotNull
@@ -25,10 +26,8 @@ public class AddresseDTO implements Serializable {
     @NotNull
     private String country;
 
-    private OrganizationDTO organization;
-
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -36,7 +35,7 @@ public class AddresseDTO implements Serializable {
     }
 
     public String getLine1() {
-        return line1;
+        return this.line1;
     }
 
     public void setLine1(String line1) {
@@ -44,7 +43,7 @@ public class AddresseDTO implements Serializable {
     }
 
     public String getCity() {
-        return city;
+        return this.city;
     }
 
     public void setCity(String city) {
@@ -52,7 +51,7 @@ public class AddresseDTO implements Serializable {
     }
 
     public String getPostalCode() {
-        return postalCode;
+        return this.postalCode;
     }
 
     public void setPostalCode(String postalCode) {
@@ -60,19 +59,11 @@ public class AddresseDTO implements Serializable {
     }
 
     public String getCountry() {
-        return country;
+        return this.country;
     }
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public OrganizationDTO getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(OrganizationDTO organization) {
-        this.organization = organization;
     }
 
     @Override
@@ -100,12 +91,11 @@ public class AddresseDTO implements Serializable {
     @Override
     public String toString() {
         return "AddresseDTO{" +
-            "id=" + getId() +
-            ", line1='" + getLine1() + "'" +
-            ", city='" + getCity() + "'" +
-            ", postalCode='" + getPostalCode() + "'" +
-            ", country='" + getCountry() + "'" +
-            ", organization=" + getOrganization() +
-            "}";
+                "id=" + getId() +
+                ", line1='" + getLine1() + "'" +
+                ", city='" + getCity() + "'" +
+                ", postalCode='" + getPostalCode() + "'" +
+                ", country='" + getCountry() + "'" +
+                "}";
     }
 }
