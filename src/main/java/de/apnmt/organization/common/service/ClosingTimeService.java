@@ -1,14 +1,21 @@
 package de.apnmt.organization.common.service;
 
+import de.apnmt.common.TopicConstants;
+import de.apnmt.common.event.ApnmtEvent;
+import de.apnmt.common.event.ApnmtEventType;
+import de.apnmt.common.event.value.ClosingTimeEventDTO;
+import de.apnmt.common.sender.ApnmtEventSender;
 import de.apnmt.organization.common.domain.ClosingTime;
 import de.apnmt.organization.common.repository.ClosingTimeRepository;
 import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
+import de.apnmt.organization.common.service.mapper.ClosingTimeEventMapper;
 import de.apnmt.organization.common.service.mapper.ClosingTimeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +34,15 @@ public class ClosingTimeService {
 
     private final ClosingTimeMapper closingTimeMapper;
 
-    public ClosingTimeService(ClosingTimeRepository closingTimeRepository, ClosingTimeMapper closingTimeMapper) {
+    private final ApnmtEventSender<ClosingTimeEventDTO> sender;
+
+    private final ClosingTimeEventMapper closingTimeEventMapper;
+
+    public ClosingTimeService(ClosingTimeRepository closingTimeRepository, ClosingTimeMapper closingTimeMapper, ApnmtEventSender<ClosingTimeEventDTO> sender, ClosingTimeEventMapper closingTimeEventMapper) {
         this.closingTimeRepository = closingTimeRepository;
         this.closingTimeMapper = closingTimeMapper;
+        this.sender = sender;
+        this.closingTimeEventMapper = closingTimeEventMapper;
     }
 
     /**
@@ -39,10 +52,11 @@ public class ClosingTimeService {
      * @return the persisted entity.
      */
     public ClosingTimeDTO save(ClosingTimeDTO closingTimeDTO) {
-        log.debug("Request to save ClosingTime : {}", closingTimeDTO);
-        ClosingTime closingTime = closingTimeMapper.toEntity(closingTimeDTO);
-        closingTime = closingTimeRepository.save(closingTime);
-        return closingTimeMapper.toDto(closingTime);
+        this.log.debug("Request to save ClosingTime : {}", closingTimeDTO);
+        ClosingTime closingTime = this.closingTimeMapper.toEntity(closingTimeDTO);
+        closingTime = this.closingTimeRepository.save(closingTime);
+        this.sender.send(TopicConstants.CLOSING_TIME_CHANGED_TOPIC, createEvent(closingTime, ApnmtEventType.closingTimeCreated));
+        return this.closingTimeMapper.toDto(closingTime);
     }
 
     /**
@@ -52,19 +66,23 @@ public class ClosingTimeService {
      * @return the persisted entity.
      */
     public Optional<ClosingTimeDTO> partialUpdate(ClosingTimeDTO closingTimeDTO) {
-        log.debug("Request to partially update ClosingTime : {}", closingTimeDTO);
+        this.log.debug("Request to partially update ClosingTime : {}", closingTimeDTO);
 
-        return closingTimeRepository
-            .findById(closingTimeDTO.getId())
-            .map(
-                existingClosingTime -> {
-                    closingTimeMapper.partialUpdate(existingClosingTime, closingTimeDTO);
+        return this.closingTimeRepository
+                .findById(closingTimeDTO.getId())
+                .map(
+                        existingClosingTime -> {
+                            this.closingTimeMapper.partialUpdate(existingClosingTime, closingTimeDTO);
 
-                    return existingClosingTime;
-                }
-            )
-            .map(closingTimeRepository::save)
-            .map(closingTimeMapper::toDto);
+                            return existingClosingTime;
+                        }
+                )
+                .map(this.closingTimeRepository::save)
+                .map(closingTime -> {
+                    this.sender.send(TopicConstants.CLOSING_TIME_CHANGED_TOPIC, createEvent(closingTime, ApnmtEventType.closingTimeCreated));
+                    return closingTime;
+                })
+                .map(this.closingTimeMapper::toDto);
     }
 
     /**
@@ -74,8 +92,8 @@ public class ClosingTimeService {
      */
     @Transactional(readOnly = true)
     public List<ClosingTimeDTO> findAll() {
-        log.debug("Request to get all ClosingTimes");
-        return closingTimeRepository.findAll().stream().map(closingTimeMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        this.log.debug("Request to get all ClosingTimes");
+        return this.closingTimeRepository.findAll().stream().map(this.closingTimeMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -86,8 +104,8 @@ public class ClosingTimeService {
      */
     @Transactional(readOnly = true)
     public Optional<ClosingTimeDTO> findOne(Long id) {
-        log.debug("Request to get ClosingTime : {}", id);
-        return closingTimeRepository.findById(id).map(closingTimeMapper::toDto);
+        this.log.debug("Request to get ClosingTime : {}", id);
+        return this.closingTimeRepository.findById(id).map(this.closingTimeMapper::toDto);
     }
 
     /**
@@ -96,7 +114,19 @@ public class ClosingTimeService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete ClosingTime : {}", id);
-        closingTimeRepository.deleteById(id);
+        this.log.debug("Request to delete ClosingTime : {}", id);
+        Optional<ClosingTime> maybe = this.closingTimeRepository.findById(id);
+        ApnmtEvent<ClosingTimeEventDTO> event;
+        if (maybe.isPresent()) {
+            event = createEvent(maybe.get(), ApnmtEventType.closingTimeDeleted);
+        } else {
+            event = createEvent(new ClosingTime().id(id), ApnmtEventType.closingTimeDeleted);
+        }
+        this.sender.send(TopicConstants.CLOSING_TIME_CHANGED_TOPIC, event);
+        this.closingTimeRepository.deleteById(id);
+    }
+
+    private ApnmtEvent<ClosingTimeEventDTO> createEvent(ClosingTime closingTime, ApnmtEventType type) {
+        return new ApnmtEvent<ClosingTimeEventDTO>().timestamp(LocalDateTime.now()).type(type).value(this.closingTimeEventMapper.toDto(closingTime));
     }
 }

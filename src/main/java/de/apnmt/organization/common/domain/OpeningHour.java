@@ -1,7 +1,7 @@
 package de.apnmt.organization.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import de.apnmt.organization.common.domain.enumeration.Day;
+import de.apnmt.common.enumeration.Day;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

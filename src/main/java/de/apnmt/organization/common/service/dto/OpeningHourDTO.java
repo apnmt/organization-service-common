@@ -1,7 +1,7 @@
 package de.apnmt.organization.common.service.dto;
 
+import de.apnmt.common.enumeration.Day;
 import de.apnmt.organization.common.domain.OpeningHour;
-import de.apnmt.organization.common.domain.enumeration.Day;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

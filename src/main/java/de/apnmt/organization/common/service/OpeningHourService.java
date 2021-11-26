@@ -1,14 +1,21 @@
 package de.apnmt.organization.common.service;
 
+import de.apnmt.common.TopicConstants;
+import de.apnmt.common.event.ApnmtEvent;
+import de.apnmt.common.event.ApnmtEventType;
+import de.apnmt.common.event.value.OpeningHourEventDTO;
+import de.apnmt.common.sender.ApnmtEventSender;
 import de.apnmt.organization.common.domain.OpeningHour;
 import de.apnmt.organization.common.repository.OpeningHourRepository;
 import de.apnmt.organization.common.service.dto.OpeningHourDTO;
+import de.apnmt.organization.common.service.mapper.OpeningHourEventMapper;
 import de.apnmt.organization.common.service.mapper.OpeningHourMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +34,15 @@ public class OpeningHourService {
 
     private final OpeningHourMapper openingHourMapper;
 
-    public OpeningHourService(OpeningHourRepository openingHourRepository, OpeningHourMapper openingHourMapper) {
+    private final ApnmtEventSender<OpeningHourEventDTO> sender;
+
+    private final OpeningHourEventMapper openingHourEventMapper;
+
+    public OpeningHourService(OpeningHourRepository openingHourRepository, OpeningHourMapper openingHourMapper, ApnmtEventSender<OpeningHourEventDTO> sender, OpeningHourEventMapper openingHourEventMapper) {
         this.openingHourRepository = openingHourRepository;
         this.openingHourMapper = openingHourMapper;
+        this.sender = sender;
+        this.openingHourEventMapper = openingHourEventMapper;
     }
 
     /**
@@ -39,10 +52,11 @@ public class OpeningHourService {
      * @return the persisted entity.
      */
     public OpeningHourDTO save(OpeningHourDTO openingHourDTO) {
-        log.debug("Request to save OpeningHour : {}", openingHourDTO);
-        OpeningHour openingHour = openingHourMapper.toEntity(openingHourDTO);
-        openingHour = openingHourRepository.save(openingHour);
-        return openingHourMapper.toDto(openingHour);
+        this.log.debug("Request to save OpeningHour : {}", openingHourDTO);
+        OpeningHour openingHour = this.openingHourMapper.toEntity(openingHourDTO);
+        openingHour = this.openingHourRepository.save(openingHour);
+        this.sender.send(TopicConstants.OPENING_HOUR_CHANGED_TOPIC, createEvent(openingHour, ApnmtEventType.openingHourCreated));
+        return this.openingHourMapper.toDto(openingHour);
     }
 
     /**
@@ -52,19 +66,23 @@ public class OpeningHourService {
      * @return the persisted entity.
      */
     public Optional<OpeningHourDTO> partialUpdate(OpeningHourDTO openingHourDTO) {
-        log.debug("Request to partially update OpeningHour : {}", openingHourDTO);
+        this.log.debug("Request to partially update OpeningHour : {}", openingHourDTO);
 
-        return openingHourRepository
-            .findById(openingHourDTO.getId())
-            .map(
-                existingOpeningHour -> {
-                    openingHourMapper.partialUpdate(existingOpeningHour, openingHourDTO);
+        return this.openingHourRepository
+                .findById(openingHourDTO.getId())
+                .map(
+                        existingOpeningHour -> {
+                            this.openingHourMapper.partialUpdate(existingOpeningHour, openingHourDTO);
 
-                    return existingOpeningHour;
-                }
-            )
-            .map(openingHourRepository::save)
-            .map(openingHourMapper::toDto);
+                            return existingOpeningHour;
+                        }
+                )
+                .map(this.openingHourRepository::save)
+                .map(openingHour -> {
+                    this.sender.send(TopicConstants.OPENING_HOUR_CHANGED_TOPIC, createEvent(openingHour, ApnmtEventType.openingHourCreated));
+                    return openingHour;
+                })
+                .map(this.openingHourMapper::toDto);
     }
 
     /**
@@ -74,8 +92,8 @@ public class OpeningHourService {
      */
     @Transactional(readOnly = true)
     public List<OpeningHourDTO> findAll() {
-        log.debug("Request to get all OpeningHours");
-        return openingHourRepository.findAll().stream().map(openingHourMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        this.log.debug("Request to get all OpeningHours");
+        return this.openingHourRepository.findAll().stream().map(this.openingHourMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -86,8 +104,8 @@ public class OpeningHourService {
      */
     @Transactional(readOnly = true)
     public Optional<OpeningHourDTO> findOne(Long id) {
-        log.debug("Request to get OpeningHour : {}", id);
-        return openingHourRepository.findById(id).map(openingHourMapper::toDto);
+        this.log.debug("Request to get OpeningHour : {}", id);
+        return this.openingHourRepository.findById(id).map(this.openingHourMapper::toDto);
     }
 
     /**
@@ -96,7 +114,19 @@ public class OpeningHourService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete OpeningHour : {}", id);
-        openingHourRepository.deleteById(id);
+        this.log.debug("Request to delete OpeningHour : {}", id);
+        Optional<OpeningHour> maybe = this.openingHourRepository.findById(id);
+        ApnmtEvent<OpeningHourEventDTO> event;
+        if (maybe.isPresent()) {
+            event = createEvent(maybe.get(), ApnmtEventType.openingHourDeleted);
+        } else {
+            event = createEvent(new OpeningHour().id(id), ApnmtEventType.openingHourDeleted);
+        }
+        this.sender.send(TopicConstants.OPENING_HOUR_CHANGED_TOPIC, event);
+        this.openingHourRepository.deleteById(id);
+    }
+
+    private ApnmtEvent<OpeningHourEventDTO> createEvent(OpeningHour openingHour, ApnmtEventType type) {
+        return new ApnmtEvent<OpeningHourEventDTO>().timestamp(LocalDateTime.now()).type(type).value(this.openingHourEventMapper.toDto(openingHour));
     }
 }
