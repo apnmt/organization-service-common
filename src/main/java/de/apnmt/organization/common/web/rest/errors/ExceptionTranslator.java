@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.*;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
-import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import tech.jhipster.config.JHipsterConstants;
 import tech.jhipster.web.util.HeaderUtil;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  * The error response follows RFC7807 - Problem Details for HTTP APIs (https://tools.ietf.org/html/rfc7807).
  */
 @ControllerAdvice
-public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait {
+public class ExceptionTranslator implements ProblemHandling {
 
     private static final String FIELD_ERRORS_KEY = "fieldErrors";
     private static final String MESSAGE_KEY = "message";
@@ -106,31 +105,31 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
             .builder()
             .withType(ErrorConstants.CONSTRAINT_VIOLATION_TYPE)
             .withTitle("Method argument not valid")
-            .withStatus(defaultConstraintViolationStatus())
+            .withStatus(this.defaultConstraintViolationStatus())
             .with(MESSAGE_KEY, ErrorConstants.ERR_VALIDATION)
             .with(FIELD_ERRORS_KEY, fieldErrors)
             .build();
-        return create(ex, problem, request);
+        return this.create(ex, problem, request);
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleBadRequestAlertException(BadRequestAlertException ex, NativeWebRequest request) {
-        return create(
+        return this.create(
             ex,
             request,
-            HeaderUtil.createFailureAlert(applicationName, true, ex.getEntityName(), ex.getErrorKey(), ex.getMessage())
+            HeaderUtil.createFailureAlert(this.applicationName, true, ex.getEntityName(), ex.getErrorKey(), ex.getMessage())
         );
     }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleConcurrencyFailure(ConcurrencyFailureException ex, NativeWebRequest request) {
         Problem problem = Problem.builder().withStatus(Status.CONFLICT).with(MESSAGE_KEY, ErrorConstants.ERR_CONCURRENCY_FAILURE).build();
-        return create(ex, problem, request);
+        return this.create(ex, problem, request);
     }
 
     @Override
     public ProblemBuilder prepare(final Throwable throwable, final StatusType status, final URI type) {
-        Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
+        Collection<String> activeProfiles = Arrays.asList(this.env.getActiveProfiles());
 
         if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             if (throwable instanceof HttpMessageConversionException) {
@@ -141,7 +140,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
                     .withStatus(status)
                     .withDetail("Unable to convert http message")
                     .withCause(
-                        Optional.ofNullable(throwable.getCause()).filter(cause -> isCausalChainsEnabled()).map(this::toProblem).orElse(null)
+                        Optional.ofNullable(throwable.getCause()).filter(cause -> this.isCausalChainsEnabled()).map(this::toProblem).orElse(null)
                     );
             }
             if (throwable instanceof DataAccessException) {
@@ -152,10 +151,10 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
                     .withStatus(status)
                     .withDetail("Failure during data access")
                     .withCause(
-                        Optional.ofNullable(throwable.getCause()).filter(cause -> isCausalChainsEnabled()).map(this::toProblem).orElse(null)
+                        Optional.ofNullable(throwable.getCause()).filter(cause -> this.isCausalChainsEnabled()).map(this::toProblem).orElse(null)
                     );
             }
-            if (containsPackageName(throwable.getMessage())) {
+            if (this.containsPackageName(throwable.getMessage())) {
                 return Problem
                     .builder()
                     .withType(type)
@@ -163,7 +162,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
                     .withStatus(status)
                     .withDetail("Unexpected runtime exception")
                     .withCause(
-                        Optional.ofNullable(throwable.getCause()).filter(cause -> isCausalChainsEnabled()).map(this::toProblem).orElse(null)
+                        Optional.ofNullable(throwable.getCause()).filter(cause -> this.isCausalChainsEnabled()).map(this::toProblem).orElse(null)
                     );
             }
         }
@@ -175,7 +174,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
             .withStatus(status)
             .withDetail(throwable.getMessage())
             .withCause(
-                Optional.ofNullable(throwable.getCause()).filter(cause -> isCausalChainsEnabled()).map(this::toProblem).orElse(null)
+                Optional.ofNullable(throwable.getCause()).filter(cause -> this.isCausalChainsEnabled()).map(this::toProblem).orElse(null)
             );
     }
 
