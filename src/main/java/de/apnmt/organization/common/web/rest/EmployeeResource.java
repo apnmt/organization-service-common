@@ -1,10 +1,10 @@
 package de.apnmt.organization.common.web.rest;
 
+import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.Employee;
 import de.apnmt.organization.common.repository.EmployeeRepository;
 import de.apnmt.organization.common.service.EmployeeService;
 import de.apnmt.organization.common.service.dto.EmployeeDTO;
-import de.apnmt.organization.common.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,21 +53,21 @@ public class EmployeeResource {
      */
     @PostMapping("/employees")
     public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) throws URISyntaxException {
-        log.debug("REST request to save Employee : {}", employeeDTO);
+        this.log.debug("REST request to save Employee : {}", employeeDTO);
         if (employeeDTO.getId() != null) {
             throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        EmployeeDTO result = employeeService.save(employeeDTO);
+        EmployeeDTO result = this.employeeService.save(employeeDTO);
         return ResponseEntity
             .created(new URI("/api/employees/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(this.applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PUT  /employees/:id} : Updates an existing employee.
      *
-     * @param id the id of the employeeDTO to save.
+     * @param id          the id of the employeeDTO to save.
      * @param employeeDTO the employeeDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated employeeDTO,
      * or with status {@code 400 (Bad Request)} if the employeeDTO is not valid,
@@ -79,7 +79,7 @@ public class EmployeeResource {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody EmployeeDTO employeeDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Employee : {}, {}", id, employeeDTO);
+        this.log.debug("REST request to update Employee : {}, {}", id, employeeDTO);
         if (employeeDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -87,21 +87,21 @@ public class EmployeeResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!employeeRepository.existsById(id)) {
+        if (!this.employeeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        EmployeeDTO result = employeeService.save(employeeDTO);
+        EmployeeDTO result = this.employeeService.save(employeeDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employeeDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, employeeDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /employees/:id} : Partial updates given fields of an existing employee, field will ignore if it is null
      *
-     * @param id the id of the employeeDTO to save.
+     * @param id          the id of the employeeDTO to save.
      * @param employeeDTO the employeeDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated employeeDTO,
      * or with status {@code 400 (Bad Request)} if the employeeDTO is not valid,
@@ -114,7 +114,7 @@ public class EmployeeResource {
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody EmployeeDTO employeeDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Employee partially : {}, {}", id, employeeDTO);
+        this.log.debug("REST request to partial update Employee partially : {}, {}", id, employeeDTO);
         if (employeeDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -122,15 +122,15 @@ public class EmployeeResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!employeeRepository.existsById(id)) {
+        if (!this.employeeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<EmployeeDTO> result = employeeService.partialUpdate(employeeDTO);
+        Optional<EmployeeDTO> result = this.employeeService.partialUpdate(employeeDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employeeDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, employeeDTO.getId().toString())
         );
     }
 
@@ -141,8 +141,8 @@ public class EmployeeResource {
      */
     @GetMapping("/employees")
     public List<EmployeeDTO> getAllEmployees() {
-        log.debug("REST request to get all Employees");
-        return employeeService.findAll();
+        this.log.debug("REST request to get all Employees");
+        return this.employeeService.findAll();
     }
 
     /**
@@ -153,8 +153,8 @@ public class EmployeeResource {
      */
     @GetMapping("/employees/{id}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
-        log.debug("REST request to get Employee : {}", id);
-        Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
+        this.log.debug("REST request to get Employee : {}", id);
+        Optional<EmployeeDTO> employeeDTO = this.employeeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(employeeDTO);
     }
 
@@ -166,11 +166,11 @@ public class EmployeeResource {
      */
     @DeleteMapping("/employees/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        log.debug("REST request to delete Employee : {}", id);
-        employeeService.delete(id);
+        this.log.debug("REST request to delete Employee : {}", id);
+        this.employeeService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
 }

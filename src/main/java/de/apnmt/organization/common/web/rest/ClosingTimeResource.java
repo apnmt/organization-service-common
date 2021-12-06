@@ -1,10 +1,10 @@
 package de.apnmt.organization.common.web.rest;
 
+import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.ClosingTime;
 import de.apnmt.organization.common.repository.ClosingTimeRepository;
 import de.apnmt.organization.common.service.ClosingTimeService;
 import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
-import de.apnmt.organization.common.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,21 +53,21 @@ public class ClosingTimeResource {
      */
     @PostMapping("/closing-times")
     public ResponseEntity<ClosingTimeDTO> createClosingTime(@Valid @RequestBody ClosingTimeDTO closingTimeDTO) throws URISyntaxException {
-        log.debug("REST request to save ClosingTime : {}", closingTimeDTO);
+        this.log.debug("REST request to save ClosingTime : {}", closingTimeDTO);
         if (closingTimeDTO.getId() != null) {
             throw new BadRequestAlertException("A new closingTime cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ClosingTimeDTO result = closingTimeService.save(closingTimeDTO);
+        ClosingTimeDTO result = this.closingTimeService.save(closingTimeDTO);
         return ResponseEntity
             .created(new URI("/api/closing-times/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(this.applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PUT  /closing-times/:id} : Updates an existing closingTime.
      *
-     * @param id the id of the closingTimeDTO to save.
+     * @param id             the id of the closingTimeDTO to save.
      * @param closingTimeDTO the closingTimeDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated closingTimeDTO,
      * or with status {@code 400 (Bad Request)} if the closingTimeDTO is not valid,
@@ -79,7 +79,7 @@ public class ClosingTimeResource {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody ClosingTimeDTO closingTimeDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update ClosingTime : {}, {}", id, closingTimeDTO);
+        this.log.debug("REST request to update ClosingTime : {}, {}", id, closingTimeDTO);
         if (closingTimeDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -87,21 +87,21 @@ public class ClosingTimeResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!closingTimeRepository.existsById(id)) {
+        if (!this.closingTimeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ClosingTimeDTO result = closingTimeService.save(closingTimeDTO);
+        ClosingTimeDTO result = this.closingTimeService.save(closingTimeDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, closingTimeDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, closingTimeDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /closing-times/:id} : Partial updates given fields of an existing closingTime, field will ignore if it is null
      *
-     * @param id the id of the closingTimeDTO to save.
+     * @param id             the id of the closingTimeDTO to save.
      * @param closingTimeDTO the closingTimeDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated closingTimeDTO,
      * or with status {@code 400 (Bad Request)} if the closingTimeDTO is not valid,
@@ -114,7 +114,7 @@ public class ClosingTimeResource {
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody ClosingTimeDTO closingTimeDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update ClosingTime partially : {}, {}", id, closingTimeDTO);
+        this.log.debug("REST request to partial update ClosingTime partially : {}, {}", id, closingTimeDTO);
         if (closingTimeDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -122,15 +122,15 @@ public class ClosingTimeResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!closingTimeRepository.existsById(id)) {
+        if (!this.closingTimeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<ClosingTimeDTO> result = closingTimeService.partialUpdate(closingTimeDTO);
+        Optional<ClosingTimeDTO> result = this.closingTimeService.partialUpdate(closingTimeDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, closingTimeDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, closingTimeDTO.getId().toString())
         );
     }
 
@@ -141,8 +141,8 @@ public class ClosingTimeResource {
      */
     @GetMapping("/closing-times")
     public List<ClosingTimeDTO> getAllClosingTimes() {
-        log.debug("REST request to get all ClosingTimes");
-        return closingTimeService.findAll();
+        this.log.debug("REST request to get all ClosingTimes");
+        return this.closingTimeService.findAll();
     }
 
     /**
@@ -153,8 +153,8 @@ public class ClosingTimeResource {
      */
     @GetMapping("/closing-times/{id}")
     public ResponseEntity<ClosingTimeDTO> getClosingTime(@PathVariable Long id) {
-        log.debug("REST request to get ClosingTime : {}", id);
-        Optional<ClosingTimeDTO> closingTimeDTO = closingTimeService.findOne(id);
+        this.log.debug("REST request to get ClosingTime : {}", id);
+        Optional<ClosingTimeDTO> closingTimeDTO = this.closingTimeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(closingTimeDTO);
     }
 
@@ -166,11 +166,11 @@ public class ClosingTimeResource {
      */
     @DeleteMapping("/closing-times/{id}")
     public ResponseEntity<Void> deleteClosingTime(@PathVariable Long id) {
-        log.debug("REST request to delete ClosingTime : {}", id);
-        closingTimeService.delete(id);
+        this.log.debug("REST request to delete ClosingTime : {}", id);
+        this.closingTimeService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
 }

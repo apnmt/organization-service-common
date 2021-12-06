@@ -1,10 +1,10 @@
 package de.apnmt.organization.common.web.rest;
 
+import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.OpeningHour;
 import de.apnmt.organization.common.repository.OpeningHourRepository;
 import de.apnmt.organization.common.service.OpeningHourService;
 import de.apnmt.organization.common.service.dto.OpeningHourDTO;
-import de.apnmt.organization.common.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,21 +53,21 @@ public class OpeningHourResource {
      */
     @PostMapping("/opening-hours")
     public ResponseEntity<OpeningHourDTO> createOpeningHour(@Valid @RequestBody OpeningHourDTO openingHourDTO) throws URISyntaxException {
-        log.debug("REST request to save OpeningHour : {}", openingHourDTO);
+        this.log.debug("REST request to save OpeningHour : {}", openingHourDTO);
         if (openingHourDTO.getId() != null) {
             throw new BadRequestAlertException("A new openingHour cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        OpeningHourDTO result = openingHourService.save(openingHourDTO);
+        OpeningHourDTO result = this.openingHourService.save(openingHourDTO);
         return ResponseEntity
             .created(new URI("/api/opening-hours/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(this.applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PUT  /opening-hours/:id} : Updates an existing openingHour.
      *
-     * @param id the id of the openingHourDTO to save.
+     * @param id             the id of the openingHourDTO to save.
      * @param openingHourDTO the openingHourDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated openingHourDTO,
      * or with status {@code 400 (Bad Request)} if the openingHourDTO is not valid,
@@ -79,7 +79,7 @@ public class OpeningHourResource {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody OpeningHourDTO openingHourDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update OpeningHour : {}, {}", id, openingHourDTO);
+        this.log.debug("REST request to update OpeningHour : {}, {}", id, openingHourDTO);
         if (openingHourDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -87,21 +87,21 @@ public class OpeningHourResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!openingHourRepository.existsById(id)) {
+        if (!this.openingHourRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        OpeningHourDTO result = openingHourService.save(openingHourDTO);
+        OpeningHourDTO result = this.openingHourService.save(openingHourDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, openingHourDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, openingHourDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /opening-hours/:id} : Partial updates given fields of an existing openingHour, field will ignore if it is null
      *
-     * @param id the id of the openingHourDTO to save.
+     * @param id             the id of the openingHourDTO to save.
      * @param openingHourDTO the openingHourDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated openingHourDTO,
      * or with status {@code 400 (Bad Request)} if the openingHourDTO is not valid,
@@ -114,7 +114,7 @@ public class OpeningHourResource {
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody OpeningHourDTO openingHourDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update OpeningHour partially : {}, {}", id, openingHourDTO);
+        this.log.debug("REST request to partial update OpeningHour partially : {}, {}", id, openingHourDTO);
         if (openingHourDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -122,15 +122,15 @@ public class OpeningHourResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!openingHourRepository.existsById(id)) {
+        if (!this.openingHourRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<OpeningHourDTO> result = openingHourService.partialUpdate(openingHourDTO);
+        Optional<OpeningHourDTO> result = this.openingHourService.partialUpdate(openingHourDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, openingHourDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, openingHourDTO.getId().toString())
         );
     }
 
@@ -141,8 +141,8 @@ public class OpeningHourResource {
      */
     @GetMapping("/opening-hours")
     public List<OpeningHourDTO> getAllOpeningHours() {
-        log.debug("REST request to get all OpeningHours");
-        return openingHourService.findAll();
+        this.log.debug("REST request to get all OpeningHours");
+        return this.openingHourService.findAll();
     }
 
     /**
@@ -153,8 +153,8 @@ public class OpeningHourResource {
      */
     @GetMapping("/opening-hours/{id}")
     public ResponseEntity<OpeningHourDTO> getOpeningHour(@PathVariable Long id) {
-        log.debug("REST request to get OpeningHour : {}", id);
-        Optional<OpeningHourDTO> openingHourDTO = openingHourService.findOne(id);
+        this.log.debug("REST request to get OpeningHour : {}", id);
+        Optional<OpeningHourDTO> openingHourDTO = this.openingHourService.findOne(id);
         return ResponseUtil.wrapOrNotFound(openingHourDTO);
     }
 
@@ -166,11 +166,11 @@ public class OpeningHourResource {
      */
     @DeleteMapping("/opening-hours/{id}")
     public ResponseEntity<Void> deleteOpeningHour(@PathVariable Long id) {
-        log.debug("REST request to delete OpeningHour : {}", id);
-        openingHourService.delete(id);
+        this.log.debug("REST request to delete OpeningHour : {}", id);
+        this.openingHourService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
 }

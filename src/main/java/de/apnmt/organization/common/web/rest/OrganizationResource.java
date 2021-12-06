@@ -1,10 +1,10 @@
 package de.apnmt.organization.common.web.rest;
 
+import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.OrganizationService;
 import de.apnmt.organization.common.service.dto.OrganizationDTO;
-import de.apnmt.organization.common.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,21 +60,21 @@ public class OrganizationResource {
     @PostMapping("/organizations")
     public ResponseEntity<OrganizationDTO> createOrganization(@Valid @RequestBody OrganizationDTO organizationDTO)
         throws URISyntaxException {
-        log.debug("REST request to save Organization : {}", organizationDTO);
+        this.log.debug("REST request to save Organization : {}", organizationDTO);
         if (organizationDTO.getId() != null) {
             throw new BadRequestAlertException("A new organization cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        OrganizationDTO result = organizationService.save(organizationDTO);
+        OrganizationDTO result = this.organizationService.save(organizationDTO);
         return ResponseEntity
             .created(new URI("/api/organizations/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(this.applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PUT  /organizations/:id} : Updates an existing organization.
      *
-     * @param id the id of the organizationDTO to save.
+     * @param id              the id of the organizationDTO to save.
      * @param organizationDTO the organizationDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated organizationDTO,
      * or with status {@code 400 (Bad Request)} if the organizationDTO is not valid,
@@ -86,7 +86,7 @@ public class OrganizationResource {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody OrganizationDTO organizationDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Organization : {}, {}", id, organizationDTO);
+        this.log.debug("REST request to update Organization : {}, {}", id, organizationDTO);
         if (organizationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -94,21 +94,21 @@ public class OrganizationResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!organizationRepository.existsById(id)) {
+        if (!this.organizationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        OrganizationDTO result = organizationService.save(organizationDTO);
+        OrganizationDTO result = this.organizationService.save(organizationDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, organizationDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, organizationDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /organizations/:id} : Partial updates given fields of an existing organization, field will ignore if it is null
      *
-     * @param id the id of the organizationDTO to save.
+     * @param id              the id of the organizationDTO to save.
      * @param organizationDTO the organizationDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated organizationDTO,
      * or with status {@code 400 (Bad Request)} if the organizationDTO is not valid,
@@ -121,7 +121,7 @@ public class OrganizationResource {
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody OrganizationDTO organizationDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Organization partially : {}, {}", id, organizationDTO);
+        this.log.debug("REST request to partial update Organization partially : {}, {}", id, organizationDTO);
         if (organizationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -129,15 +129,15 @@ public class OrganizationResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!organizationRepository.existsById(id)) {
+        if (!this.organizationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<OrganizationDTO> result = organizationService.partialUpdate(organizationDTO);
+        Optional<OrganizationDTO> result = this.organizationService.partialUpdate(organizationDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, organizationDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, organizationDTO.getId().toString())
         );
     }
 
@@ -145,17 +145,17 @@ public class OrganizationResource {
      * {@code GET  /organizations} : get all the organizations.
      *
      * @param pageable the pagination information.
-     * @param filter the filter of the request.
+     * @param filter   the filter of the request.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of organizations in body.
      */
     @GetMapping("/organizations")
     public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(Pageable pageable, @RequestParam(required = false) String filter) {
         if ("addresse-is-null".equals(filter)) {
-            log.debug("REST request to get all Organizations where addresse is null");
-            return new ResponseEntity<>(organizationService.findAllWhereAddresseIsNull(), HttpStatus.OK);
+            this.log.debug("REST request to get all Organizations where addresse is null");
+            return new ResponseEntity<>(this.organizationService.findAllWhereAddresseIsNull(), HttpStatus.OK);
         }
-        log.debug("REST request to get a page of Organizations");
-        Page<OrganizationDTO> page = organizationService.findAll(pageable);
+        this.log.debug("REST request to get a page of Organizations");
+        Page<OrganizationDTO> page = this.organizationService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -168,8 +168,8 @@ public class OrganizationResource {
      */
     @GetMapping("/organizations/{id}")
     public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable Long id) {
-        log.debug("REST request to get Organization : {}", id);
-        Optional<OrganizationDTO> organizationDTO = organizationService.findOne(id);
+        this.log.debug("REST request to get Organization : {}", id);
+        Optional<OrganizationDTO> organizationDTO = this.organizationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(organizationDTO);
     }
 
@@ -181,11 +181,11 @@ public class OrganizationResource {
      */
     @DeleteMapping("/organizations/{id}")
     public ResponseEntity<Void> deleteOrganization(@PathVariable Long id) {
-        log.debug("REST request to delete Organization : {}", id);
-        organizationService.delete(id);
+        this.log.debug("REST request to delete Organization : {}", id);
+        this.organizationService.delete(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
 }
