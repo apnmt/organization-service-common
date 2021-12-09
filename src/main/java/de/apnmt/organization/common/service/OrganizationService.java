@@ -1,5 +1,11 @@
 package de.apnmt.organization.common.service;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.dto.OrganizationDTO;
@@ -10,12 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Service Implementation for managing {@link Organization}.
@@ -42,10 +42,14 @@ public class OrganizationService {
      * @return the persisted entity.
      */
     public OrganizationDTO save(OrganizationDTO organizationDTO) {
-        log.debug("Request to save Organization : {}", organizationDTO);
-        Organization organization = organizationMapper.toEntity(organizationDTO);
-        organization = organizationRepository.save(organization);
-        return organizationMapper.toDto(organization);
+        this.log.debug("Request to save Organization : {}", organizationDTO);
+        Organization organization = this.organizationMapper.toEntity(organizationDTO);
+        // an organization is deactivated by default, will be activated when payment succeeded
+        if (organization.getId() == null) {
+            organization.setActive(false);
+        }
+        organization = this.organizationRepository.save(organization);
+        return this.organizationMapper.toDto(organization);
     }
 
     /**
@@ -55,19 +59,13 @@ public class OrganizationService {
      * @return the persisted entity.
      */
     public Optional<OrganizationDTO> partialUpdate(OrganizationDTO organizationDTO) {
-        log.debug("Request to partially update Organization : {}", organizationDTO);
+        this.log.debug("Request to partially update Organization : {}", organizationDTO);
 
-        return organizationRepository
-            .findById(organizationDTO.getId())
-            .map(
-                existingOrganization -> {
-                    organizationMapper.partialUpdate(existingOrganization, organizationDTO);
+        return this.organizationRepository.findById(organizationDTO.getId()).map(existingOrganization -> {
+            this.organizationMapper.partialUpdate(existingOrganization, organizationDTO);
 
-                    return existingOrganization;
-                }
-            )
-            .map(organizationRepository::save)
-            .map(organizationMapper::toDto);
+            return existingOrganization;
+        }).map(this.organizationRepository::save).map(this.organizationMapper::toDto);
     }
 
     /**
@@ -78,22 +76,19 @@ public class OrganizationService {
      */
     @Transactional(readOnly = true)
     public Page<OrganizationDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Organizations");
-        return organizationRepository.findAll(pageable).map(organizationMapper::toDto);
+        this.log.debug("Request to get all Organizations");
+        return this.organizationRepository.findAllByActive(true, pageable).map(this.organizationMapper::toDto);
     }
 
     /**
-     *  Get all the organizations where Addresse is {@code null}.
-     *  @return the list of entities.
+     * Get all the organizations where Addresse is {@code null}.
+     *
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public List<OrganizationDTO> findAllWhereAddresseIsNull() {
-        log.debug("Request to get all organizations where Addresse is null");
-        return StreamSupport
-            .stream(organizationRepository.findAll().spliterator(), false)
-            .filter(organization -> organization.getAddresse() == null)
-            .map(organizationMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        this.log.debug("Request to get all organizations where Addresse is null");
+        return StreamSupport.stream(this.organizationRepository.findAll().spliterator(), false).filter(organization -> organization.getAddresse() == null).map(this.organizationMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -104,8 +99,8 @@ public class OrganizationService {
      */
     @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findOne(Long id) {
-        log.debug("Request to get Organization : {}", id);
-        return organizationRepository.findById(id).map(organizationMapper::toDto);
+        this.log.debug("Request to get Organization : {}", id);
+        return this.organizationRepository.findById(id).map(this.organizationMapper::toDto);
     }
 
     /**
@@ -114,7 +109,7 @@ public class OrganizationService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Organization : {}", id);
-        organizationRepository.deleteById(id);
+        this.log.debug("Request to delete Organization : {}", id);
+        this.organizationRepository.deleteById(id);
     }
 }
