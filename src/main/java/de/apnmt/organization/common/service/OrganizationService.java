@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import de.apnmt.common.event.value.OrganizationActivationEventDTO;
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.dto.OrganizationDTO;
@@ -53,6 +54,20 @@ public class OrganizationService {
     }
 
     /**
+     * Activate a organization.
+     *
+     * @param organizationActivationDTO
+     */
+    public void handleOrganizationActivation(OrganizationActivationEventDTO organizationActivationDTO) {
+        Optional<Organization> maybe = this.organizationRepository.findById(organizationActivationDTO.getOrganizationId());
+        if (maybe.isPresent()) {
+            Organization organization = maybe.get();
+            organization.setActive(organizationActivationDTO.isActive());
+            this.organizationRepository.save(organization);
+        }
+    }
+
+    /**
      * Partially update a organization.
      *
      * @param organizationDTO the entity to update partially.
@@ -88,7 +103,10 @@ public class OrganizationService {
     @Transactional(readOnly = true)
     public List<OrganizationDTO> findAllWhereAddresseIsNull() {
         this.log.debug("Request to get all organizations where Addresse is null");
-        return StreamSupport.stream(this.organizationRepository.findAll().spliterator(), false).filter(organization -> organization.getAddresse() == null).map(this.organizationMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        return StreamSupport.stream(this.organizationRepository.findAll().spliterator(), false)
+                .filter(organization -> organization.getAddresse() == null)
+                .map(this.organizationMapper::toDto)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
