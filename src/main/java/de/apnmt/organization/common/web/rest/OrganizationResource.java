@@ -1,10 +1,19 @@
 package de.apnmt.organization.common.web.rest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.OrganizationService;
 import de.apnmt.organization.common.service.dto.OrganizationDTO;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,19 +22,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * REST controller for managing {@link Organization}.
@@ -54,21 +64,20 @@ public class OrganizationResource {
      * {@code POST  /organizations} : Create a new organization.
      *
      * @param organizationDTO the organizationDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new organizationDTO, or with status {@code 400 (Bad Request)} if the organization has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new organizationDTO, or with status {@code 400 (Bad Request)} if the organization
+     * has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/organizations")
-    public ResponseEntity<OrganizationDTO> createOrganization(@Valid @RequestBody OrganizationDTO organizationDTO)
-        throws URISyntaxException {
+    public ResponseEntity<OrganizationDTO> createOrganization(@Valid @RequestBody OrganizationDTO organizationDTO) throws URISyntaxException {
         this.log.debug("REST request to save Organization : {}", organizationDTO);
         if (organizationDTO.getId() != null) {
             throw new BadRequestAlertException("A new organization cannot already have an ID", ENTITY_NAME, "idexists");
         }
         OrganizationDTO result = this.organizationService.save(organizationDTO);
-        return ResponseEntity
-            .created(new URI("/api/organizations/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(this.applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        return ResponseEntity.created(new URI("/api/organizations/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(this.applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -82,10 +91,7 @@ public class OrganizationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/organizations/{id}")
-    public ResponseEntity<OrganizationDTO> updateOrganization(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody OrganizationDTO organizationDTO
-    ) throws URISyntaxException {
+    public ResponseEntity<OrganizationDTO> updateOrganization(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody OrganizationDTO organizationDTO) throws URISyntaxException {
         this.log.debug("REST request to update Organization : {}, {}", id, organizationDTO);
         if (organizationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -99,10 +105,7 @@ public class OrganizationResource {
         }
 
         OrganizationDTO result = this.organizationService.save(organizationDTO);
-        return ResponseEntity
-            .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, organizationDTO.getId().toString()))
-            .body(result);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, organizationDTO.getId().toString())).body(result);
     }
 
     /**
@@ -117,10 +120,8 @@ public class OrganizationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/organizations/{id}", consumes = "application/merge-patch+json")
-    public ResponseEntity<OrganizationDTO> partialUpdateOrganization(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody OrganizationDTO organizationDTO
-    ) throws URISyntaxException {
+    public ResponseEntity<OrganizationDTO> partialUpdateOrganization(@PathVariable(value = "id", required = false) final Long id,
+                                                                     @NotNull @RequestBody OrganizationDTO organizationDTO) throws URISyntaxException {
         this.log.debug("REST request to partial update Organization partially : {}, {}", id, organizationDTO);
         if (organizationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -135,10 +136,7 @@ public class OrganizationResource {
 
         Optional<OrganizationDTO> result = this.organizationService.partialUpdate(organizationDTO);
 
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, organizationDTO.getId().toString())
-        );
+        return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(this.applicationName, true, ENTITY_NAME, organizationDTO.getId().toString()));
     }
 
     /**
@@ -149,6 +147,7 @@ public class OrganizationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of organizations in body.
      */
     @GetMapping("/organizations")
+    @Timed(value = "fetch.organizations.time", description = "Time taken to return organizations")
     public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(Pageable pageable, @RequestParam(required = false) String filter) {
         if ("addresse-is-null".equals(filter)) {
             this.log.debug("REST request to get all Organizations where addresse is null");
@@ -183,9 +182,6 @@ public class OrganizationResource {
     public ResponseEntity<Void> deleteOrganization(@PathVariable Long id) {
         this.log.debug("REST request to delete Organization : {}", id);
         this.organizationService.delete(id);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }
