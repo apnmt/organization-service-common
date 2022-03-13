@@ -24,7 +24,7 @@ public class OrganizationDTO implements Serializable {
     private String phone;
 
     @NotNull
-    private Long ownerId;
+    private String owner;
 
     @NotNull
     private Boolean active;
@@ -64,12 +64,12 @@ public class OrganizationDTO implements Serializable {
         this.phone = phone;
     }
 
-    public Long getOwnerId() {
-        return this.ownerId;
+    public String getOwner() {
+        return this.owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public Boolean getActive() {
@@ -116,7 +116,7 @@ public class OrganizationDTO implements Serializable {
                 ", name='" + this.name + '\'' +
                 ", mail='" + this.mail + '\'' +
                 ", phone='" + this.phone + '\'' +
-                ", ownerId=" + this.ownerId +
+                ", owner=" + this.owner +
                 ", active=" + this.active +
                 ", addresse=" + this.addresse +
                 '}';

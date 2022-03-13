@@ -35,8 +35,8 @@ public class Organization implements Serializable {
     private String phone;
 
     @NotNull
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+    @Column(name = "owner", nullable = false)
+    private String owner;
 
     @NotNull
     @Column(name = "active", nullable = false)
@@ -110,17 +110,17 @@ public class Organization implements Serializable {
         this.phone = phone;
     }
 
-    public Long getOwnerId() {
-        return this.ownerId;
+    public String getOwner() {
+        return this.owner;
     }
 
-    public Organization ownerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public Organization owner(String owner) {
+        this.owner = owner;
         return this;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public Boolean getActive() {
@@ -275,7 +275,7 @@ public class Organization implements Serializable {
                 ", name='" + getName() + "'" +
                 ", mail='" + getMail() + "'" +
                 ", phone='" + getPhone() + "'" +
-                ", ownerId='" + getOwnerId() + "'" +
+                ", owner='" + getOwner() + "'" +
                 ", active='" + getActive() + "'" +
                 "}";
     }
