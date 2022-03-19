@@ -4,6 +4,7 @@ import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.OpeningHour;
 import de.apnmt.organization.common.repository.OpeningHourRepository;
 import de.apnmt.organization.common.service.OpeningHourService;
+import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
 import de.apnmt.organization.common.service.dto.OpeningHourDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,6 +144,17 @@ public class OpeningHourResource {
     public List<OpeningHourDTO> getAllOpeningHours() {
         this.log.debug("REST request to get all OpeningHours");
         return this.openingHourService.findAll();
+    }
+
+    /**
+     * {@code GET  /opening-hours/organization/:id} : get all the employees.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of closingTimes in body.
+     */
+    @GetMapping("/opening-hours/organization/{id}")
+    public List<OpeningHourDTO> getAllClosingTimes(@PathVariable Long id) {
+        this.log.debug("REST request to get all OpeningHours for Organization {}", id);
+        return this.openingHourService.findAllForOrganization(id);
     }
 
     /**

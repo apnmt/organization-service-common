@@ -1,7 +1,9 @@
 package de.apnmt.organization.common.service;
 
 import de.apnmt.organization.common.domain.Employee;
+import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.EmployeeRepository;
+import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.dto.EmployeeDTO;
 import de.apnmt.organization.common.service.mapper.EmployeeMapper;
 import org.slf4j.Logger;
@@ -25,10 +27,13 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
+    private final OrganizationRepository organizationRepository;
+
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
+    public EmployeeService(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
+        this.organizationRepository = organizationRepository;
         this.employeeMapper = employeeMapper;
     }
 
@@ -76,6 +81,18 @@ public class EmployeeService {
     public List<EmployeeDTO> findAll() {
         log.debug("Request to get all Employees");
         return employeeRepository.findAll().stream().map(employeeMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    /**
+     * Get all the employees.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<EmployeeDTO> findAllForOrganization(Long id) {
+        log.debug("Request to get all Employees for Organization {}", id);
+        Organization organization = organizationRepository.getOne(id);
+        return employeeRepository.findAllByOrganization(organization).stream().map(employeeMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**

@@ -6,8 +6,11 @@ import de.apnmt.common.event.ApnmtEventType;
 import de.apnmt.common.event.value.ClosingTimeEventDTO;
 import de.apnmt.common.sender.ApnmtEventSender;
 import de.apnmt.organization.common.domain.ClosingTime;
+import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.ClosingTimeRepository;
+import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
+import de.apnmt.organization.common.service.dto.EmployeeDTO;
 import de.apnmt.organization.common.service.mapper.ClosingTimeEventMapper;
 import de.apnmt.organization.common.service.mapper.ClosingTimeMapper;
 import org.slf4j.Logger;
@@ -32,14 +35,17 @@ public class ClosingTimeService {
 
     private final ClosingTimeRepository closingTimeRepository;
 
+    private final OrganizationRepository organizationRepository;
+
     private final ClosingTimeMapper closingTimeMapper;
 
     private final ApnmtEventSender<ClosingTimeEventDTO> sender;
 
     private final ClosingTimeEventMapper closingTimeEventMapper;
 
-    public ClosingTimeService(ClosingTimeRepository closingTimeRepository, ClosingTimeMapper closingTimeMapper, ApnmtEventSender<ClosingTimeEventDTO> sender, ClosingTimeEventMapper closingTimeEventMapper) {
+    public ClosingTimeService(ClosingTimeRepository closingTimeRepository, OrganizationRepository organizationRepository, ClosingTimeMapper closingTimeMapper, ApnmtEventSender<ClosingTimeEventDTO> sender, ClosingTimeEventMapper closingTimeEventMapper) {
         this.closingTimeRepository = closingTimeRepository;
+        this.organizationRepository = organizationRepository;
         this.closingTimeMapper = closingTimeMapper;
         this.sender = sender;
         this.closingTimeEventMapper = closingTimeEventMapper;
@@ -94,6 +100,18 @@ public class ClosingTimeService {
     public List<ClosingTimeDTO> findAll() {
         this.log.debug("Request to get all ClosingTimes");
         return this.closingTimeRepository.findAll().stream().map(this.closingTimeMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    /**
+     * Get all the closingTimes.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<ClosingTimeDTO> findAllForOrganization(Long id) {
+        log.debug("Request to get all ClosingTimes for Organization {}", id);
+        Organization organization = organizationRepository.getOne(id);
+        return closingTimeRepository.findAllByOrganization(organization).stream().map(closingTimeMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**

@@ -6,7 +6,10 @@ import de.apnmt.common.event.ApnmtEventType;
 import de.apnmt.common.event.value.OpeningHourEventDTO;
 import de.apnmt.common.sender.ApnmtEventSender;
 import de.apnmt.organization.common.domain.OpeningHour;
+import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OpeningHourRepository;
+import de.apnmt.organization.common.repository.OrganizationRepository;
+import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
 import de.apnmt.organization.common.service.dto.OpeningHourDTO;
 import de.apnmt.organization.common.service.mapper.OpeningHourEventMapper;
 import de.apnmt.organization.common.service.mapper.OpeningHourMapper;
@@ -32,14 +35,17 @@ public class OpeningHourService {
 
     private final OpeningHourRepository openingHourRepository;
 
+    private final OrganizationRepository organizationRepository;
+
     private final OpeningHourMapper openingHourMapper;
 
     private final ApnmtEventSender<OpeningHourEventDTO> sender;
 
     private final OpeningHourEventMapper openingHourEventMapper;
 
-    public OpeningHourService(OpeningHourRepository openingHourRepository, OpeningHourMapper openingHourMapper, ApnmtEventSender<OpeningHourEventDTO> sender, OpeningHourEventMapper openingHourEventMapper) {
+    public OpeningHourService(OpeningHourRepository openingHourRepository, OrganizationRepository organizationRepository, OpeningHourMapper openingHourMapper, ApnmtEventSender<OpeningHourEventDTO> sender, OpeningHourEventMapper openingHourEventMapper) {
         this.openingHourRepository = openingHourRepository;
+        this.organizationRepository = organizationRepository;
         this.openingHourMapper = openingHourMapper;
         this.sender = sender;
         this.openingHourEventMapper = openingHourEventMapper;
@@ -94,6 +100,18 @@ public class OpeningHourService {
     public List<OpeningHourDTO> findAll() {
         this.log.debug("Request to get all OpeningHours");
         return this.openingHourRepository.findAll().stream().map(this.openingHourMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    /**
+     * Get all the openingHours.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<OpeningHourDTO> findAllForOrganization(Long id) {
+        log.debug("Request to get all OpeningHours for Organization {}", id);
+        Organization organization = organizationRepository.getOne(id);
+        return openingHourRepository.findAllByOrganization(organization).stream().map(openingHourMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**

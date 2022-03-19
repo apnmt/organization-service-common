@@ -146,6 +146,17 @@ public class EmployeeResource {
     }
 
     /**
+     * {@code GET  /employees/organization/:id} : get all the employees.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of employees in body.
+     */
+    @GetMapping("/employees/organization/{id}")
+    public List<EmployeeDTO> getAllEmployees(@PathVariable Long id) {
+        this.log.debug("REST request to get all Employees");
+        return this.employeeService.findAllForOrganization(id);
+    }
+
+    /**
      * {@code GET  /employees/:id} : get the "id" employee.
      *
      * @param id the id of the employeeDTO to retrieve.

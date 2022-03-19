@@ -5,6 +5,7 @@ import de.apnmt.organization.common.domain.ClosingTime;
 import de.apnmt.organization.common.repository.ClosingTimeRepository;
 import de.apnmt.organization.common.service.ClosingTimeService;
 import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
+import de.apnmt.organization.common.service.dto.EmployeeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -143,6 +144,17 @@ public class ClosingTimeResource {
     public List<ClosingTimeDTO> getAllClosingTimes() {
         this.log.debug("REST request to get all ClosingTimes");
         return this.closingTimeService.findAll();
+    }
+
+    /**
+     * {@code GET  /closing-times/organization/:id} : get all the employees.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of closingTimes in body.
+     */
+    @GetMapping("/closing-times/organization/{id}")
+    public List<ClosingTimeDTO> getAllClosingTimes(@PathVariable Long id) {
+        this.log.debug("REST request to get all ClosingTimes for Organization {}", id);
+        return this.closingTimeService.findAllForOrganization(id);
     }
 
     /**
