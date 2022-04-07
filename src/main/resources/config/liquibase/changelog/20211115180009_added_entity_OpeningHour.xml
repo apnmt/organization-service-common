@@ -28,6 +28,7 @@
         </createTable>
         <dropDefaultValue tableName="opening_hour" columnName="start_time" columnDataType="time"/>
         <dropDefaultValue tableName="opening_hour" columnName="end_time" columnDataType="time"/>
+        <createSequence sequenceName="opening_hour_sequence" startValue="2000" incrementBy="1"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

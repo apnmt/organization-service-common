@@ -18,7 +18,7 @@ public class WorkingHour implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator", sequenceName = "working_hour_sequence", allocationSize = 1)
     private Long id;
 
     @NotNull
