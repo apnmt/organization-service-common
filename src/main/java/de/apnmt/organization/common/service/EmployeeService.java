@@ -116,4 +116,12 @@ public class EmployeeService {
         log.debug("Request to delete Employee : {}", id);
         employeeRepository.deleteById(id);
     }
+
+    /**
+     * Delete all employees.
+     */
+    public void deleteAll() {
+        log.debug("Request to delete all employees");
+        employeeRepository.deleteAllByIdGreaterThan(753L);
+    }
 }

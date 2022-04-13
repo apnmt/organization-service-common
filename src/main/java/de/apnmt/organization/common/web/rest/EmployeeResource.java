@@ -180,8 +180,22 @@ public class EmployeeResource {
         this.log.debug("REST request to delete Employee : {}", id);
         this.employeeService.delete(id);
         return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+                .noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
+                .build();
+    }
+
+    /**
+     * {@code DELETE  /employees} : delete all employees.
+     *
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/employees")
+    public ResponseEntity<Void> deleteEmployees() {
+        this.log.debug("REST request to delete all employees");
+        this.employeeService.deleteAll();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

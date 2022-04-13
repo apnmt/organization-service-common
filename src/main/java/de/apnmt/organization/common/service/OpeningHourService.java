@@ -9,7 +9,6 @@ import de.apnmt.organization.common.domain.OpeningHour;
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OpeningHourRepository;
 import de.apnmt.organization.common.repository.OrganizationRepository;
-import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
 import de.apnmt.organization.common.service.dto.OpeningHourDTO;
 import de.apnmt.organization.common.service.mapper.OpeningHourEventMapper;
 import de.apnmt.organization.common.service.mapper.OpeningHourMapper;
@@ -146,5 +145,13 @@ public class OpeningHourService {
 
     private ApnmtEvent<OpeningHourEventDTO> createEvent(OpeningHour openingHour, ApnmtEventType type) {
         return new ApnmtEvent<OpeningHourEventDTO>().timestamp(LocalDateTime.now()).type(type).value(this.openingHourEventMapper.toDto(openingHour));
+    }
+
+    /**
+     * Delete all openingHours.
+     */
+    public void deleteAll() {
+        log.debug("Request to delete all openingHours");
+        openingHourRepository.deleteAllByIdGreaterThan(1255L);
     }
 }

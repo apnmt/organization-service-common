@@ -5,7 +5,6 @@ import de.apnmt.organization.common.domain.ClosingTime;
 import de.apnmt.organization.common.repository.ClosingTimeRepository;
 import de.apnmt.organization.common.service.ClosingTimeService;
 import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
-import de.apnmt.organization.common.service.dto.EmployeeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -181,8 +180,22 @@ public class ClosingTimeResource {
         this.log.debug("REST request to delete ClosingTime : {}", id);
         this.closingTimeService.delete(id);
         return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+                .noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
+                .build();
+    }
+
+    /**
+     * {@code DELETE  /closing-times} : delete all closingTimes.
+     *
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/closing-times")
+    public ResponseEntity<Void> deleteClosingTimes() {
+        this.log.debug("REST request to delete all closingTimes");
+        this.closingTimeService.deleteAll();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

@@ -4,7 +4,6 @@ import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.OpeningHour;
 import de.apnmt.organization.common.repository.OpeningHourRepository;
 import de.apnmt.organization.common.service.OpeningHourService;
-import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
 import de.apnmt.organization.common.service.dto.OpeningHourDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,8 +180,22 @@ public class OpeningHourResource {
         this.log.debug("REST request to delete OpeningHour : {}", id);
         this.openingHourService.delete(id);
         return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+                .noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString()))
+                .build();
+    }
+
+    /**
+     * {@code DELETE  /opening-hours} : delete all openingHours.
+     *
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/opening-hours")
+    public ResponseEntity<Void> deleteOpeningHours() {
+        this.log.debug("REST request to delete all openingHours");
+        this.openingHourService.deleteAll();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

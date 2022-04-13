@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface WorkingHourRepository extends JpaRepository<WorkingHour, Long> {}
+public interface WorkingHourRepository extends JpaRepository<WorkingHour, Long> {
+
+    void deleteAllByIdGreaterThan(Long id);
+
+}

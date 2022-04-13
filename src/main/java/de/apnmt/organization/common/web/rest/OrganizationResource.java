@@ -1,13 +1,5 @@
 package de.apnmt.organization.common.web.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import de.apnmt.common.errors.BadRequestAlertException;
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OrganizationRepository;
@@ -22,20 +14,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link Organization}.
@@ -183,5 +174,19 @@ public class OrganizationResource {
         this.log.debug("REST request to delete Organization : {}", id);
         this.organizationService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(this.applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * {@code DELETE  /organizations} : delete all organizations.
+     *
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/organizations")
+    public ResponseEntity<Void> deleteOpeningHours() {
+        this.log.debug("REST request to delete all organizations");
+        this.organizationService.deleteAll();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

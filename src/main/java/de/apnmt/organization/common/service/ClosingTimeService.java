@@ -10,7 +10,6 @@ import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.ClosingTimeRepository;
 import de.apnmt.organization.common.repository.OrganizationRepository;
 import de.apnmt.organization.common.service.dto.ClosingTimeDTO;
-import de.apnmt.organization.common.service.dto.EmployeeDTO;
 import de.apnmt.organization.common.service.mapper.ClosingTimeEventMapper;
 import de.apnmt.organization.common.service.mapper.ClosingTimeMapper;
 import org.slf4j.Logger;
@@ -146,5 +145,13 @@ public class ClosingTimeService {
 
     private ApnmtEvent<ClosingTimeEventDTO> createEvent(ClosingTime closingTime, ApnmtEventType type) {
         return new ApnmtEvent<ClosingTimeEventDTO>().timestamp(LocalDateTime.now()).type(type).value(this.closingTimeEventMapper.toDto(closingTime));
+    }
+
+    /**
+     * Delete all closingTimes.
+     */
+    public void deleteAll() {
+        log.debug("Request to delete all ClosingTimes");
+        closingTimeRepository.deleteAll();
     }
 }

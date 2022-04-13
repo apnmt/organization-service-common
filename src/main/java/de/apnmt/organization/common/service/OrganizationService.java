@@ -1,11 +1,5 @@
 package de.apnmt.organization.common.service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import de.apnmt.common.event.value.OrganizationActivationEventDTO;
 import de.apnmt.organization.common.domain.Organization;
 import de.apnmt.organization.common.repository.OrganizationRepository;
@@ -17,6 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Service Implementation for managing {@link Organization}.
@@ -129,5 +129,13 @@ public class OrganizationService {
     public void delete(Long id) {
         this.log.debug("Request to delete Organization : {}", id);
         this.organizationRepository.deleteById(id);
+    }
+
+    /**
+     * Delete all organizations.
+     */
+    public void deleteAll() {
+        log.debug("Request to delete all organizations");
+        organizationRepository.deleteAllByIdGreaterThan(251L);
     }
 }

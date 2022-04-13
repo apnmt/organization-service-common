@@ -15,4 +15,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     Page<Organization> findAllByActive(boolean active, Pageable pageable);
 
+    void deleteAllByIdGreaterThan(Long id);
+
 }

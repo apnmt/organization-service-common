@@ -129,4 +129,12 @@ public class WorkingHourService {
     private ApnmtEvent<WorkingHourEventDTO> createEvent(WorkingHour workingHour, ApnmtEventType type) {
         return new ApnmtEvent<WorkingHourEventDTO>().timestamp(LocalDateTime.now()).type(type).value(this.workingHourEventMapper.toDto(workingHour));
     }
+
+    /**
+     * Delete all workingHours.
+     */
+    public void deleteAll() {
+        log.debug("Request to delete all workingHours");
+        workingHourRepository.deleteAllByIdGreaterThan(3614L);
+    }
 }

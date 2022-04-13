@@ -16,4 +16,6 @@ public interface OpeningHourRepository extends JpaRepository<OpeningHour, Long> 
 
     List<OpeningHour> findAllByOrganization(Organization organization);
 
+    void deleteAllByIdGreaterThan(Long id);
+
 }
